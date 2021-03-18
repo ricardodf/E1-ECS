@@ -32,8 +32,6 @@ class App extends Component {
       sentences_tone: data.sentences_tone
     });
     console.log(data);
-    console.log(this.state.document_tone)
-    console.log(this.state.sentences_tone)
   }
 
   render() {
