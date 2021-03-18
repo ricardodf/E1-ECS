@@ -7,7 +7,8 @@ class App extends Component {
     this.state = {
       value: '',
       document_tone: null,
-      sentences_tone: null
+      sentences_tone: null,
+      error_in_response: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,20 +28,27 @@ class App extends Component {
 
     const response = await fetch('https://is714522-cloud-foundry.us-south.cf.appdomain.cloud/tone', requestOptions);
     const data = await response.json();
-    this.setState({ 
-      document_tone: data.document_tone.tones[0],
-      sentences_tone: data.sentences_tone
-    });
-    console.log(data);
+    if(data.document_tone && data.document_tone.tones.length > 0) {
+      this.setState({ 
+        document_tone: data.document_tone.tones[0],
+        sentences_tone: data.sentences_tone,
+        error_in_response: false
+      });
+      console.log(data);
+    } else {
+      this.setState({
+        error_in_response: true
+      })
+    }
   }
 
   render() {
     return (
       <div className="app-container">
         <form onSubmit={this.handleSubmit}>        <label>
-          Texto:
+          Ingresa el texto
           <input type="text" value={this.state.value} onChange={this.handleChange} />        </label>
-          <input type="submit" value="Submit" />
+          <input type="submit" value="Enter" />
         </form>
         { this.state.document_tone ? (
           <div>
@@ -59,6 +67,13 @@ class App extends Component {
             })}
           </div>
         ) : null}
+        { this.state.error_in_response ? (
+          <div>
+            <h4>Haz mandado una cadena vacía o el mensaje no es claro :(</h4>
+          </div>
+        ) : null
+
+        }
         </div>
     );
   }
